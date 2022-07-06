@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.hardware.Camera.CameraInfo
+import android.os.AsyncTask
 import android.os.Build
 import android.view.View
 import androidx.core.content.ContextCompat
@@ -18,6 +19,8 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.PluginRegistry
 import io.flutter.plugin.platform.PlatformView
+import java.io.File
+import net.touchcapture.qr.flutterqr.QRCodeDecoder
 
 
 class QRView(
@@ -105,6 +108,8 @@ class QRView(
             "invertScan" -> setInvertScan(
                 isInvert = call.argument<Boolean>("isInvertScan") ?: false,
             )
+
+            "imgQrCode" -> imgQrCode(filePath = requireNotNull(call.argument<String>("filePath")),result = result)
 
             else -> result.notImplemented()
         }
@@ -252,6 +257,20 @@ class QRView(
         )
     }
 
+    private fun imgQrCode(filePath: String,result : MethodChannel.Result) {
+      var file =  File(filePath);
+        if (!file.exists()) {
+            result.error(ERROR_FILE_NOT_FOUND, null, null)
+        }
+        val syncDecodeQRCode = QRCodeDecoder.syncDecodeQRCode(filePath)
+        if(syncDecodeQRCode != null){
+            result.success(syncDecodeQRCode)
+        }else{
+            result.error("not data", null, null)
+        }
+
+    }
+
     private fun stopScan() {
         barcodeView?.stopDecoding()
     }
@@ -374,6 +393,7 @@ class QRView(
 
         private const val ERROR_MESSAGE_NOT_SET = "No barcode view found"
         private const val ERROR_MESSAGE_FLASH_NOT_FOUND = "This device doesn't support flash"
+        private const val ERROR_FILE_NOT_FOUND = "File no Find"
     }
 }
 

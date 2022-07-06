@@ -77,6 +77,9 @@ public class QRView:NSObject,FlutterPlatformView {
                     self?.getFlashInfo(result)
                 case "getSystemFeatures":
                     self?.getSystemFeatures(result)
+                case "imgQrCode":
+                    let path: String = (call.arguments as! Dictionary)["filePath"] ?? ""
+                    self?.imgQrCodeFeatures(path: path ,result)
                 default:
                     result(FlutterMethodNotImplemented)
                     return
@@ -300,5 +303,32 @@ public class QRView:NSObject,FlutterPlatformView {
         }
         return result(FlutterError(code: "404", message: nil, details: nil))
     }
-
+    
+    func imgQrCodeFeatures(path: String, _ result: @escaping FlutterResult) {
+        guard let image: UIImage = UIImage.init(contentsOfFile: path) else {
+            result(nil)
+            return
+        }
+        
+        let detector = CIDetector(ofType: CIDetectorTypeQRCode, context: nil, options: [CIDetectorAccuracy : CIDetectorAccuracyHigh])
+        
+        guard let imageCG = image.cgImage else {
+            result(nil)
+            return
+        }
+        
+        guard let features = detector?.features(in: CIImage.init(cgImage: imageCG)) else {
+            result(nil)
+            return
+        }
+        
+        if let feature: CIQRCodeFeature = features.first as? CIQRCodeFeature {
+            let qrData: String? = feature.messageString
+            result(qrData)
+            return
+        } else {
+            result(nil)
+            return
+        }
+    }
  }
