@@ -262,9 +262,9 @@ class QRView(
         if (!file.exists()) {
             result.error(ERROR_FILE_NOT_FOUND, null, null)
         }
-        val syncDecodeQRCode = QRCodeDecoder.syncDecodeQRCode(filePath)
-        if(syncDecodeQRCode != null){
-            result.success(syncDecodeQRCode)
+        val decodeQRCode = QRCodeDecoder.decodeQRCode(context,filePath)
+        if(decodeQRCode != null){
+            result.success(decodeQRCode)
         }else{
             result.error("not data", null, null)
         }
@@ -395,5 +395,8 @@ class QRView(
         private const val ERROR_MESSAGE_FLASH_NOT_FOUND = "This device doesn't support flash"
         private const val ERROR_FILE_NOT_FOUND = "File no Find"
     }
+
+
+
 }
 
