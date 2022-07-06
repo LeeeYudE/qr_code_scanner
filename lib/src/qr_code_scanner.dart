@@ -370,4 +370,16 @@ class QRViewController {
       }
     }
   }
+
+  //扫描二维码文件
+  Future<String?> imgScan(String filePath) async {
+    try {
+      final rest = await _channel.invokeMethod("imgQrCode", {"filePath": filePath});
+      return rest;
+    } catch (e) {
+      debugPrint('$e');
+      return null;
+    }
+  }
+
 }

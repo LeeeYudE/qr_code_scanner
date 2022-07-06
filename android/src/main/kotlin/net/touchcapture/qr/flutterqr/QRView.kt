@@ -258,7 +258,7 @@ class QRView(
     }
 
     private fun imgQrCode(filePath: String,result : MethodChannel.Result) {
-      var file =  File(filePath);
+        var file =  File(filePath);
         if (!file.exists()) {
             result.error(ERROR_FILE_NOT_FOUND, null, null)
         }
