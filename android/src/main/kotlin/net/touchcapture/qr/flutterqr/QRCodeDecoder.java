@@ -1,4 +1,4 @@
-package android.src.main.kotlin.net.touchcapture.qr.flutterqr;
+package net.touchcapture.qr.flutterqr;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
